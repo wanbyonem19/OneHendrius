@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes,maximum-scale=5.0">
+<title>⬡ One Hendrius</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;700;800&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0c0c0f;
+    --surface: #13131a;
+    --border: #1f1f2e;
+    --accent: #7c6af7;
+    --accent2: #f75a6a;
+    --text: #e8e8f0;
+    --muted: #4a4a6a;
+    --glow: rgba(124, 106, 247, 0.15);
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    overflow-x: hidden;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px 16px;
+    position: relative;
+  }
+
+  /* Ambient background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -30%;
+    left: -20%;
+    width: 60%;
+    height: 60%;
+    background: radial-gradient(ellipse, rgba(124,106,247,0.08) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -20%;
+    right: -10%;
+    width: 50%;
+    height: 50%;
+    background: radial-gradient(ellipse, rgba(247,90,106,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 480px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px 24px 24px;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.03), 0 32px 80px rgba(0,0,0,0.5);
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    box-shadow: 0 0 16px var(--glow);
+  }
+
+  .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+
+  .clock {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    font-weight: 300;
+  }
+
+  /* Input area */
+  .input-wrap {
+    position: relative;
+    margin-bottom: 16px;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 120px;
+    max-height: 50vh;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.7;
+    padding: 14px 16px;
+    resize: none;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    overflow-y: auto;
+  }
+
+  textarea::placeholder { color: var(--muted); }
+
+  textarea:focus {
+    border-color: rgba(124,106,247,0.4);
+    box-shadow: 0 0 0 3px rgba(124,106,247,0.08), inset 0 0 16px rgba(124,106,247,0.03);
+  }
+
+  /* Key row */
+  .key-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .key-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0 12px;
+    transition: border-color 0.2s;
+  }
+
+  .key-wrap:focus-within {
+    border-color: rgba(124,106,247,0.35);
+  }
+
+  .key-icon {
+    color: var(--muted);
+    font-size: 13px;
+    flex-shrink: 0;
+    user-select: none;
+  }
+
+  input#key {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 400;
+    padding: 10px 0;
+    letter-spacing: 0.08em;
+  }
+
+  input#key::placeholder { color: var(--muted); }
+
+  /* Action buttons */
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .btn {
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    font-size: 18px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0);
+    transition: background 0.15s;
+  }
+
+  .btn:hover::before { background: rgba(255,255,255,0.04); }
+  .btn:active { transform: scale(0.96); }
+
+  .btn-encrypt {
+    background: linear-gradient(135deg, var(--accent), #5b4fd4);
+    box-shadow: 0 4px 16px rgba(124,106,247,0.25);
+    color: #fff;
+  }
+
+  .btn-decrypt {
+    background: linear-gradient(135deg, var(--accent2), #c94452);
+    box-shadow: 0 4px 16px rgba(247,90,106,0.2);
+    color: #fff;
+  }
+
+  .btn-clear {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    width: 44px;
+    flex-shrink: 0;
+  }
+
+  .btn-clear:hover { color: var(--text); border-color: var(--muted); }
+
+  /* Output */
+  .output-wrap {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    min-height: 60px;
+    transition: all 0.25s;
+  }
+
+  .output-wrap.has-content {
+    border-color: rgba(124,106,247,0.2);
+    box-shadow: 0 0 24px rgba(124,106,247,0.06);
+  }
+
+  .output-inner {
+    padding: 14px 16px;
+  }
+
+  .output-text {
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--text);
+    word-break: break-all;
+    white-space: pre-wrap;
+    min-height: 36px;
+  }
+
+  .output-text.empty {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 12px;
+  }
+
+  .output-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  .output-tag {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tag-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--muted);
+    display: inline-block;
+    transition: background 0.3s;
+  }
+
+  .tag-dot.active-enc { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+  .tag-dot.active-dec { background: var(--accent2); box-shadow: 0 0 6px var(--accent2); }
+
+  .btn-copy {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 13px;
+    padding: 4px 10px;
+    font-family: 'DM Mono', monospace;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .btn-copy:hover {
+    color: var(--text);
+    border-color: rgba(124,106,247,0.4);
+    background: rgba(124,106,247,0.08);
+  }
+
+  .btn-copy.copied {
+    color: #7ef7b0;
+    border-color: rgba(126,247,176,0.3);
+    background: rgba(126,247,176,0.06);
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(30,30,46,0.95);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-size: 12px;
+    color: var(--text);
+    opacity: 0;
+    transition: all 0.25s;
+    pointer-events: none;
+    backdrop-filter: blur(12px);
+    z-index: 100;
+    letter-spacing: 0.04em;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="header">
+    <div class="logo">
+      <div class="logo-icon">⬡</div>
+      <span class="logo-text">One Hendrius</span>
+    </div>
+    <div class="clock" id="clock">—</div>
+  </div>
+
+  <div class="input-wrap">
+    <textarea id="input" placeholder="↓ ketik atau tempel pesan..."></textarea>
+  </div>
+
+  <div class="key-row">
+    <div class="key-wrap">
+      <span class="key-icon">⌗</span>
+      <input type="number" id="key" placeholder="kunci angka" min="0">
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-encrypt" onclick="window.doEncrypt()" title="Enkripsi">🔒</button>
+    <button class="btn btn-decrypt" onclick="window.doDecrypt()" title="Dekripsi">🔓</button>
+    <button class="btn btn-clear" onclick="window.doClear()" title="Hapus">✕</button>
+  </div>
+
+  <div class="output-wrap" id="outputWrap">
+    <div class="output-inner">
+      <div class="output-text empty" id="outputText">hasil akan muncul di sini…</div>
+    </div>
+    <div class="output-footer" id="outputFooter" style="display:none">
+      <span class="output-tag">
+        <span class="tag-dot" id="tagDot"></span>
+        <span id="tagLabel">—</span>
+      </span>
+      <button class="btn-copy" id="copyBtn" onclick="window.doCopy()">
+        <span id="copyIcon">⎘</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function() {
+  // — Cipher maps —
+  const fw = {q:'d',d:'e',e:'h',h:'s',s:'v',v:'o',o:'k',k:'m',m:'y',y:'x',x:'t',t:'b',b:'f',f:'j',j:'a',a:'n',n:'z',z:'l',l:'c',c:'p',p:'i',i:'r',r:'g',g:'w',w:'u',u:'q'};
+  const bw = {};
+  for (const k in fw) bw[fw[k]] = k;
+
+  const fn = {'7':'0','4':'1','0':'2','6':'3','2':'4','1':'5','8':'6','5':'7','3':'8','9':'9'};
+  const bn = {};
+  for (const k in fn) bn[fn[k]] = k;
+
+  const alphabet = Object.keys(fw);
+
+  function buildMap(base, seed, keys) {
+    const visited = new Set();
+    const result = {};
+    let bigSeed;
+    try {
+      const s = String(seed || 1).trim() || '1';
+      bigSeed = BigInt(s);
+      if (bigSeed < 0n) bigSeed = -bigSeed;
+    } catch { bigSeed = 1n; }
+
+    for (const start of keys) {
+      if (visited.has(start)) continue;
+      const cycle = [];
+      let cur = start;
+      while (!visited.has(cur)) {
+        visited.add(cur);
+        cycle.push(cur);
+        if (base[cur] === undefined) break;
+        cur = base[cur];
+        if (cycle.length > 1000) break;
+      }
+      const len = cycle.length;
+      if (!len) continue;
+      const shift = Number(bigSeed % BigInt(len));
+      for (let i = 0; i < len; i++) result[cycle[i]] = cycle[(i + shift) % len];
+    }
+    return result;
+  }
+
+  function transform(text, letterBase, letterInv, numBase, numInv, seed) {
+    const lMap = buildMap(letterBase, seed, Object.keys(letterBase));
+    const uMap = buildMap(letterInv, seed, Object.keys(letterInv));
+    const nMap = buildMap(numBase, seed, Object.keys(numBase));
+    let out = '';
+    for (const ch of text) {
+      if (lMap[ch] !== undefined) out += lMap[ch];
+      else if (uMap[ch] !== undefined) out += uMap[ch];
+      else if (nMap[ch] !== undefined) out += nMap[ch];
+      else out += ch;
+    }
+    return out;
+  }
+
+  function getKey() {
+    let k = document.getElementById('key').value;
+    if (!k || k.trim() === '') k = '1';
+    k = k.trim();
+    try { const b = BigInt(k); k = b < 0n ? String(-b) : String(b); } catch { k = '1'; }
+    return k;
+  }
+
+  function showResult(text, mode) {
+    const el = document.getElementById('outputText');
+    const footer = document.getElementById('outputFooter');
+    const wrap = document.getElementById('outputWrap');
+    const dot = document.getElementById('tagDot');
+    const label = document.getElementById('tagLabel');
+
+    el.textContent = text;
+    el.classList.remove('empty');
+    footer.style.display = 'flex';
+    wrap.classList.add('has-content');
+
+    dot.className = 'tag-dot ' + (mode === 'enc' ? 'active-enc' : 'active-dec');
+    label.textContent = mode === 'enc' ? 'encrypted' : 'decrypted';
+  }
+
+  window.doEncrypt = function() {
+    const txt = document.getElementById('input').value || '';
+    const key = getKey();
+    if (key === '0') { showResult(txt, 'enc'); return; }
+    const result = transform(txt, fw, bw, fn, bn, key);
+    showResult(result, 'enc');
+  };
+
+  window.doDecrypt = function() {
+    const txt = document.getElementById('input').value || '';
+    const key = getKey();
+    if (key === '0') { showResult(txt, 'dec'); return; }
+    const result = transform(txt, bw, fw, bn, fn, key);
+    showResult(result, 'dec');
+  };
+
+  window.doClear = function() {
+    document.getElementById('input').value = '';
+    const el = document.getElementById('outputText');
+    el.textContent = 'hasil akan muncul di sini…';
+    el.classList.add('empty');
+    document.getElementById('outputFooter').style.display = 'none';
+    document.getElementById('outputWrap').classList.remove('has-content');
+    document.getElementById('key').value = '';
+    document.getElementById('input').focus();
+  };
+
+  window.doCopy = function() {
+    const text = document.getElementById('outputText').textContent;
+    const btn = document.getElementById('copyBtn');
+    const icon = document.getElementById('copyIcon');
+
+    const succeed = () => {
+      btn.classList.add('copied');
+      icon.textContent = '✓';
+      showToast('tersalin ✓');
+      setTimeout(() => { btn.classList.remove('copied'); icon.textContent = '⎘'; }, 1800);
+    };
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(succeed).catch(() => fallbackCopy(text, succeed));
+    } else {
+      fallbackCopy(text, succeed);
+    }
+  };
+
+  function fallbackCopy(text, cb) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    try { document.execCommand('copy'); cb(); } catch {}
+    document.body.removeChild(ta);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 1800);
+  }
+
+  // Clock
+  function updateClock() {
+    const now = new Date();
+    const opts = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+    document.getElementById('clock').textContent = now.toLocaleTimeString('id-ID', opts);
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  // Auto-resize textarea
+  document.addEventListener('DOMContentLoaded', () => {
+    const ta = document.getElementById('input');
+    const resize = () => {
+      ta.style.height = 'auto';
+      ta.style.height = Math.min(ta.scrollHeight, window.innerHeight * 0.45) + 'px';
+    };
+    ta.addEventListener('input', resize);
+    ta.addEventListener('paste', () => setTimeout(resize, 0));
+    ta.focus();
+  });
+})();
+</script>
+</body>
+</html>
